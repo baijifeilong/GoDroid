@@ -16,8 +16,8 @@ import java.util.*
 import kotlin.math.max
 
 class MainActivity : AppCompatActivity(), AnkoLogger, GoDroidApp.IListener {
-    override fun onNotify(title: String, content: String) {
-        list.add("$title: $content")
+    override fun onNotify(str: String) {
+        list.add(str)
         recyclerView.smoothScrollToPosition(max(recyclerView.size - 1, 0))
         recyclerView.adapter!!.notifyDataSetChanged()
     }
@@ -27,6 +27,18 @@ class MainActivity : AppCompatActivity(), AnkoLogger, GoDroidApp.IListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val filename = "MESSAGES.txt"
+        val openFileInput = openFileInput(filename)
+        val str: String = try {
+            Scanner(openFileInput).useDelimiter("\\A").next();
+        } catch (
+            e: NoSuchElementException
+        ) {
+            ""
+        }
+        openFileInput.close()
+        list.addAll(str.split("\n"))
 
         (application as GoDroidApp).listener = this
 
